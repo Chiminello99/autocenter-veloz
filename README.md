@@ -149,3 +149,5 @@ Este repositório **não contém credenciais, senhas, tokens ou chaves de API**,
 ## 9. Licença
 
 Distribuído sob a licença MIT. Veja o arquivo [LICENSE](LICENSE).
+
+
