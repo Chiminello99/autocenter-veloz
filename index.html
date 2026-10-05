@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veloz Acompanha | Oficina e Auto Center Veloz</title>
+<meta name="description" content="Acompanhe o conserto do seu carro e aprove o orçamento pelo celular, sem precisar ligar para a oficina.">
+<meta name="theme-color" content="#FFC400">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FFC400'/%3E%3Cpath d='M8 10l8 13 8-13' fill='none' stroke='%230E2238' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Overpass:wght@700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --concrete: #E3E6E9;
+    --ink: #0E2238;
+    --ink-soft: #3B4D62;
+    --muted: #55657A;
+    --bay: #FFC400;
+    --ok: #168455;
+    --paper: #F7F8F9;
+    --line: #CBD1D7;
+    --font-display: "Overpass", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--concrete);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- Navegação ---------- */
+  .nav {
+    max-width: 1240px; margin: 0 auto;
+    padding: 20px clamp(20px, 4vw, 48px);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+  .brand .mark { width: 34px; height: 34px; flex: none; }
+  .brand b { display: block; font: 900 1.4rem/1 var(--font-display); letter-spacing: -0.01em; }
+  .brand small { display: block; margin-top: 3px; font-size: 0.78rem; color: var(--ink-soft); }
+  .nav-cta {
+    border: 2px solid var(--ink); border-radius: 8px; padding: 8px 16px;
+    color: var(--ink); font-weight: 700; text-decoration: none; white-space: nowrap;
+    transition: background-color .15s, color .15s;
+  }
+  .nav-cta:hover { background: var(--ink); color: #fff; }
+
+  /* ---------- Capa ---------- */
+  .hero {
+    max-width: 1240px; margin: 0 auto;
+    padding: 16px clamp(20px, 4vw, 48px) 56px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: clamp(32px, 6vw, 88px);
+    align-items: center;
+  }
+  h1 {
+    margin: 0;
+    font: 800 clamp(2.5rem, 5.3vw, 4.7rem)/1.02 var(--font-display);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 24px 0 0; max-width: 50ch;
+    font-size: clamp(1.05rem, 1.5vw, 1.25rem); line-height: 1.55; color: var(--ink-soft);
+  }
+
+  .plate-form { margin-top: 36px; max-width: 520px; }
+  .plate-form label { display: block; margin-bottom: 8px; font-weight: 700; }
+  .plate-row { display: flex; gap: 10px; }
+  .plate-row input {
+    width: 190px; height: 56px; flex: none;
+    padding: 0 14px; border: 2px solid var(--ink); border-radius: 8px; background: #fff;
+    color: var(--ink); font: 800 1.35rem var(--font-display); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .plate-row input::placeholder { color: #8F9BA8; font-weight: 700; }
+  .plate-row input[aria-invalid="true"] { border-color: #B3261E; }
+  .plate-row button {
+    flex: 1; height: 56px; padding: 0 22px;
+    border: 0; border-radius: 8px; background: var(--ink); color: #fff;
+    font: 700 1rem var(--font-body); cursor: pointer;
+    transition: background-color .15s;
+  }
+  .plate-row button:hover { background: #1B3A5E; }
+  .plate-error { min-height: 1.4em; margin: 6px 0 0; color: #B3261E; font-size: 0.9rem; font-weight: 600; }
+  .hint { margin: 6px 0 0; max-width: 46ch; font-size: 0.9rem; color: var(--muted); }
+
+  /* ---------- Vaga do elevador (moldura do celular) ---------- */
+  .bay {
+    position: relative; width: min(420px, 100%); margin-inline: auto;
+    padding: 30px 30px 88px;
+  }
+  .bay-line { position: absolute; background: var(--bay); }
+  .bay-top   { top: 0; left: 0; right: 0; height: 7px; transform-origin: left; }
+  .bay-left  { top: 0; bottom: 0; left: 0; width: 7px; transform-origin: top; }
+  .bay-right { top: 0; bottom: 0; right: 0; width: 7px; transform-origin: top; }
+  .bay-tag {
+    position: absolute; top: -15px; left: 26px; z-index: 2;
+    padding: 5px 12px; border-radius: 4px; background: var(--bay);
+    font: 800 0.95rem/1.2 var(--font-display);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bay-left  { animation: paint-y .55s ease-out both; }
+    .bay-top   { animation: paint-x .55s .45s ease-out both; }
+    .bay-right { animation: paint-y .55s .9s ease-out both; }
+    .bay-tag   { animation: fade .3s 1.3s both; }
+    @keyframes paint-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes paint-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  }
+
+  /* ---------- Celular ---------- */
+  .phone {
+    position: relative; width: 100%; max-width: 340px; margin: 0 auto;
+    padding: 10px; border-radius: 40px; background: var(--ink);
+    box-shadow: 0 28px 36px -26px rgba(14, 34, 56, 0.55);
+  }
+  .phone::before {
+    content: ""; position: absolute; top: 19px; left: 50%; z-index: 2;
+    width: 64px; height: 6px; margin-left: -32px; border-radius: 3px; background: var(--ink);
+  }
+  .screen {
+    height: 640px; overflow-y: auto; overscroll-behavior: contain;
+    padding: 30px 16px 20px; border-radius: 31px; background: var(--paper);
+    font-size: 14px; scrollbar-width: thin;
+  }
+  .app-top { display: flex; align-items: center; justify-content: space-between; }
+  .app-brand { display: flex; align-items: center; gap: 7px; font: 900 1.05rem/1 var(--font-display); }
+  .app-brand svg { width: 22px; height: 22px; }
+  .live { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+
+  .car {
+    margin-top: 14px; padding: 11px 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: 1px solid var(--line); border-radius: 12px; background: #fff;
+  }
+  .car strong { display: block; font-size: 14.5px; line-height: 1.25; white-space: nowrap; }
+  .car span { font-size: 12px; color: var(--muted); }
+  .plate {
+    flex: none; min-width: 96px; overflow: hidden; text-align: center;
+    border: 2px solid var(--ink); border-radius: 6px; background: #fff;
+  }
+  .plate::before {
+    content: "BRASIL"; display: block; padding: 1px 0;
+    background: #1F4AA8; color: #fff; font-size: 8px; letter-spacing: 0.22em;
+  }
+  .plate span {
+    display: block; padding: 2px 6px 3px;
+    font: 800 18px/1.2 var(--font-display); letter-spacing: 0.06em; color: var(--ink);
+  }
+
+  .steps { margin: 16px 0 0; padding: 0; list-style: none; }
+  .step {
+    position: relative; padding-bottom: 14px;
+    display: grid; grid-template-columns: 28px minmax(0, 1fr); column-gap: 12px;
+  }
+  .step:last-child { padding-bottom: 0; }
+  .step::before {
+    content: ""; position: absolute; left: 13px; top: 30px; bottom: 2px; width: 2px; background: var(--line);
+  }
+  .step:last-child::before { display: none; }
+  .step[data-state="done"]::before { background: var(--ok); }
+
+  .dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center;
+    border: 2px solid var(--line); background: var(--paper);
+    transition: background-color .25s, border-color .25s;
+  }
+  .dot svg { width: 14px; height: 14px; opacity: 0; transition: opacity .25s; }
+  .step[data-state="done"] .dot { background: var(--ok); border-color: var(--ok); }
+  .step[data-state="done"] .dot svg { opacity: 1; }
+  .step[data-state="current"] .dot { background: var(--bay); border-color: var(--ink); }
+  @media (prefers-reduced-motion: no-preference) {
+    .step[data-state="current"] .dot { animation: pulse 2s ease-out infinite; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 196, 0, 0.7); }
+      70%, 100% { box-shadow: 0 0 0 10px rgba(255, 196, 0, 0); }
+    }
+  }
+
+  .step.compact { padding-bottom: 10px; }
+  .step.compact > div { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 3px; }
+  .step.compact .step-title { padding-top: 0; white-space: nowrap; }
+  .step.compact .step-meta { margin: 0; white-space: nowrap; }
+  .step.compact::before { top: 28px; }
+  .step-title { margin: 0; padding-top: 2px; font-size: 14.5px; font-weight: 700; line-height: 1.3; }
+  .step-meta { margin: 1px 0 0; font-size: 12.5px; color: var(--muted); }
+  .step[data-state="todo"] .step-title { color: var(--muted); }
+
+  /* conteúdo que abre e fecha dentro da etapa */
+  .collapse { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+  .collapse > div { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s .35s; }
+  .step[data-open="true"] .collapse { grid-template-rows: 1fr; }
+  .step[data-open="true"] .collapse > div { visibility: visible; transition-delay: 0s; }
+  @media (prefers-reduced-motion: reduce) {
+    .collapse, .collapse > div { transition: none; }
+  }
+
+  .photo { margin: 10px 0 0; border-radius: 10px; overflow: hidden; background: #2A3340; }
+  .photo svg { display: block; width: 100%; height: auto; font-family: var(--font-body); }
+  .photo figcaption { padding: 6px 10px 7px; background: #fff; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 10px 10px; font-size: 12px; line-height: 1.35; color: var(--ink-soft); }
+  .photo { background: none; }
+  .photo svg { border-radius: 10px 10px 0 0; }
+
+  .items-title { margin: 10px 0 0; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+  .items { margin: 2px 0 0; padding: 0; list-style: none; }
+  .items li { border-top: 1px solid var(--line); }
+  .items li:first-child { border-top: 0; }
+  .items label {
+    display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 9px; align-items: center;
+    min-height: 42px; padding: 5px 0; cursor: pointer;
+  }
+  .items input { width: 20px; height: 20px; margin: 0; accent-color: var(--ink); }
+  .item-name { font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+  .tag {
+    display: block; width: fit-content; margin: 2px 0 0; padding: 0 6px; border-radius: 4px;
+    background: #E8ECEF; color: var(--ink-soft); font-size: 11px; font-weight: 700; font-style: normal;
+  }
+  .tag.urgent { background: var(--bay); color: var(--ink); }
+  .item-price { font-size: 13.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .approve {
+    width: 100%; height: 46px; margin-top: 8px;
+    border: 0; border-radius: 10px; background: var(--ok); color: #fff;
+    font: 700 15px var(--font-body); cursor: pointer;
+    transition: background-color .15s, transform .1s;
+  }
+  .approve:hover:not(:disabled) { background: #11704A; }
+  .approve:active:not(:disabled) { transform: scale(0.98); }
+  .approve:disabled { background: #9AA6B2; cursor: not-allowed; }
+
+  .bar { height: 6px; margin-top: 8px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 4%; border-radius: 3px; background: var(--ink); }
+  .step[data-state="current"] .bar i { animation: fill 3.8s linear forwards; }
+  @keyframes fill { from { width: 4%; } to { width: 100%; } }
+  @media (prefers-reduced-motion: reduce) {
+    .step[data-state="current"] .bar i { animation: none; width: 55%; }
+  }
+
+  .ready {
+    margin-top: 8px; padding: 10px 12px; border: 1px solid #9AD2B5; border-radius: 10px;
+    background: #E3F3EA; font-size: 13.5px; font-weight: 600; color: #0B4F32;
+  }
+  .again {
+    display: block; margin-top: 6px; padding: 0; border: 0; background: none;
+    color: var(--ink); font: 600 13px var(--font-body); text-decoration: underline; cursor: pointer;
+  }
+
+  /* aviso da equipe, no chão da vaga */
+  .team-note {
+    position: absolute; left: 50%; bottom: 10px; z-index: 3;
+    width: min(320px, calc(100% - 20px)); padding: 10px 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+    border-radius: 12px; background: var(--ink); color: #fff; font-size: 13px; line-height: 1.35;
+    opacity: 0; transform: translate(-50%, 10px); pointer-events: none;
+    transition: opacity .3s, transform .3s;
+  }
+  .team-note.show { opacity: 1; transform: translate(-50%, 0); }
+  .team-note .mark { width: 22px; height: 22px; flex: none; }
+  .team-note b { display: block; }
+  .team-note:empty { display: none; }
+
+  /* ---------- Faixa de resultados ---------- */
+  .outcomes { background: var(--ink); color: #fff; }
+  .outcomes ul {
+    max-width: 1240px; margin: 0 auto; padding: 36px clamp(20px, 4vw, 48px) 40px;
+    list-style: none;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0;
+  }
+  .outcomes li { padding: 0 28px; border-left: 1px solid rgba(255, 255, 255, 0.2); }
+  .outcomes li:first-child { padding-left: 0; border-left: 0; }
+  .outcomes li:last-child { padding-right: 0; }
+  .outcomes h3 { margin: 0 0 6px; font: 800 1.35rem/1.2 var(--font-display); }
+  .outcomes p { margin: 0; max-width: 36ch; color: #C5CFDA; }
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: minmax(0, 1fr); gap: 56px; padding-top: 8px; }
+    .outcomes ul { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .outcomes li, .outcomes li:first-child, .outcomes li:last-child { padding: 0; border-left: 0; }
+    .outcomes li:nth-child(n+2) { padding: 24px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+  }
+  @media (max-width: 540px) {
+    .brand small { display: none; }
+    .plate-row { flex-direction: column; }
+    .plate-row input { width: 100%; }
+    .plate-row button { flex: none; width: 100%; }
+    .bay { padding: 28px 12px 88px; }
+    .screen { height: auto; overflow: visible; }
+    .plate { min-width: 88px; }
+    .plate span { font-size: 16px; }
+  }
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <a class="brand" href="#" aria-label="Oficina e Auto Center Veloz, início">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="7" fill="#FFC400"/>
+      <path d="M8 10l8 13 8-13" fill="none" stroke="#0E2238" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span><b>Veloz</b><small>Oficina e Auto Center</small></span>
+  </a>
+  <a class="nav-cta" href="#placa" id="navCta">Acompanhar meu carro</a>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="titulo">
+    <div class="hero-copy">
+      <h1 id="titulo">Acompanhe seu carro na oficina sem precisar ligar.</h1>
+      <p class="lede">
+        Quando você deixa o carro, a Veloz envia um link por WhatsApp. Nele você vê cada etapa do conserto,
+        a foto das peças com defeito e aprova o orçamento com um toque.
+      </p>
+
+      <form class="plate-form" id="plateForm" novalidate>
+        <label for="placa">Placa do veículo</label>
+        <div class="plate-row">
+          <input id="placa" name="placa" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
+                 spellcheck="false" maxlength="8" placeholder="ABC-1D23" aria-describedby="placaErro placaDica">
+          <button type="submit">Acompanhar meu carro</button>
+        </div>
+        <p class="plate-error" id="placaErro" role="alert"></p>
+        <p class="hint" id="placaDica">
+          Demonstração com dados de exemplo. Na prática, o cliente recebe o link por WhatsApp e abre
+          direto no navegador, sem instalar nada.
+        </p>
+      </form>
+    </div>
+
+    <div class="bay" id="bay">
+      <span class="bay-line bay-left" aria-hidden="true"></span>
+      <span class="bay-line bay-top" aria-hidden="true"></span>
+      <span class="bay-line bay-right" aria-hidden="true"></span>
+      <span class="bay-tag" aria-hidden="true">Elevador 3</span>
+
+      <div class="phone" role="group" aria-label="Demonstração: tela do celular do cliente">
+        <div class="screen" id="screen">
+          <div class="app-top">
+            <span class="app-brand">
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <rect width="32" height="32" rx="7" fill="#FFC400"/>
+                <path d="M8 10l8 13 8-13" fill="none" stroke="#0E2238" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Veloz
+            </span>
+            <span class="live">Atualizado agora</span>
+          </div>
+
+          <div class="car">
+            <div>
+              <strong>Honda Civic 2018</strong>
+              <span>Prata, entrou às 08:12</span>
+            </div>
+            <div class="plate"><span id="plateText">RTK-4F21</span></div>
+          </div>
+
+          <ol class="steps" id="steps">
+            <li class="step compact" data-state="done">
+              <span class="dot"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div>
+                <p class="step-title">Carro recebido</p>
+                <p class="step-meta">08:12</p>
+              </div>
+            </li>
+
+            <li class="step compact" data-state="done">
+              <span class="dot"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div>
+                <p class="step-title">Diagnóstico concluído</p>
+                <p class="step-meta">09:05</p>
+              </div>
+            </li>
+
+            <li class="step" id="stepBudget" data-state="current" data-open="true">
+              <span class="dot"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div>
+                <p class="step-title">Orçamento</p>
+                <p class="step-meta" id="budgetMeta">Aguardando a sua aprovação</p>
+                <div class="collapse">
+                  <div>
+                    <figure class="photo">
+                      <svg viewBox="0 0 240 88" role="img"
+                           aria-label="Foto da pastilha de freio dianteira com 2 milímetros de material">
+                        <rect width="240" height="88" fill="#2A3340"/>
+                        <circle cx="78" cy="54" r="62" fill="#8E9AA7"/>
+                        <circle cx="78" cy="54" r="50" fill="#A9B4BF"/>
+                        <circle cx="78" cy="54" r="22" fill="#5E6A77"/>
+                        <circle cx="78" cy="54" r="8" fill="#2A3340"/>
+                        <g fill="#2A3340">
+                          <circle cx="114" cy="58" r="3.5"/><circle cx="96" cy="89" r="3.5"/><circle cx="60" cy="89" r="3.5"/>
+                          <circle cx="42" cy="58" r="3.5"/><circle cx="60" cy="27" r="3.5"/><circle cx="96" cy="27" r="3.5"/>
+                        </g>
+                        <path d="M118 8h40a8 8 0 0 1 8 8v64a8 8 0 0 1-8 8h-40z" fill="#C0392B"/>
+                        <rect x="112" y="24" width="8" height="48" fill="#4A3B2F"/>
+                        <line x1="166" y1="46" x2="174" y2="46" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 2"/>
+                        <rect x="174" y="12" width="62" height="66" rx="8" fill="#F7F8F9"/>
+                        <rect x="184" y="22" width="42" height="8" fill="#6B7785"/>
+                        <rect x="184" y="30" width="42" height="5" fill="#4A3B2F"/>
+                        <text x="205" y="55" text-anchor="middle" font-size="17" font-weight="800" fill="#C0392B">2 mm</text>
+                        <text x="205" y="69" text-anchor="middle" font-size="8.5" font-weight="600" fill="#3B4D62">limite: 3 mm</text>
+                      </svg>
+                      <figcaption>Foto do mecânico Marcos: pastilha no limite de desgaste.</figcaption>
+                    </figure>
+
+                    <p class="items-title" id="itemsTitle">Marque o que você aprova</p>
+                    <ul class="items" aria-labelledby="itemsTitle">
+                      <li><label>
+                        <input type="checkbox" checked data-price="280">
+                        <span class="item-name">Pastilhas de freio<em class="tag urgent">Segurança</em></span>
+                        <span class="item-price">R$ 280,00</span>
+                      </label></li>
+                      <li><label>
+                        <input type="checkbox" checked data-price="90">
+                        <span class="item-name">Fluido de freio<em class="tag">Recomendado</em></span>
+                        <span class="item-price">R$ 90,00</span>
+                      </label></li>
+                      <li><label>
+                        <input type="checkbox" checked data-price="160">
+                        <span class="item-name">Alinhamento<em class="tag">Opcional</em></span>
+                        <span class="item-price">R$ 160,00</span>
+                      </label></li>
+                    </ul>
+                    <button type="button" class="approve" id="approve">Aprovar R$ 530,00</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="step" id="stepRepair" data-state="todo">
+              <span class="dot"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div>
+                <p class="step-title">Conserto</p>
+                <p class="step-meta" id="repairMeta">Começa depois da aprovação</p>
+                <div class="collapse">
+                  <div><div class="bar" aria-hidden="true"><i></i></div></div>
+                </div>
+              </div>
+            </li>
+
+            <li class="step" id="stepReady" data-state="todo">
+              <span class="dot"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div>
+                <p class="step-title">Pronto para retirada</p>
+                <p class="step-meta" id="readyMeta">Você recebe o aviso aqui</p>
+                <div class="collapse">
+                  <div>
+                    <div class="ready">Seu carro está pronto.</div>
+                    <button type="button" class="again" id="again">Rever a demonstração</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="team-note" id="teamNote" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="outcomes" aria-labelledby="resultados">
+    <h2 class="sr-only" id="resultados">O que muda para o cliente e para a oficina</h2>
+    <ul>
+      <li>
+        <h3>Status sem telefonema</h3>
+        <p>Cada etapa aparece no celular do cliente assim que o mecânico atualiza. A recepção não precisa ligar nem atender.</p>
+      </li>
+      <li>
+        <h3>Aprovação em um toque</h3>
+        <p>O orçamento chega com foto da peça e valor por item. O cliente aprova só o que quiser, de onde estiver.</p>
+      </li>
+      <li>
+        <h3>Pátio mais livre</h3>
+        <p>Com a autorização na hora, o serviço começa logo e o carro deixa o pátio mais cedo.</p>
+      </li>
+    </ul>
+  </section>
+</main>
+
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const $ = (sel) => document.querySelector(sel);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  const steps = [...document.querySelectorAll('#steps .step')];
+  const items = [...document.querySelectorAll('.items input')];
+  const approveBtn = $('#approve');
+  const note = $('#teamNote');
+  const screen = $('#screen');
+  const live = $('#live');
+  let timer = null;
+
+  const total = () => items.reduce((sum, i) => sum + (i.checked ? Number(i.dataset.price) : 0), 0);
+  const nowTime = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  function updateTotal() {
+    const t = total();
+    approveBtn.disabled = t === 0;
+    approveBtn.textContent = t === 0 ? 'Marque ao menos um item' : 'Aprovar ' + money.format(t);
+  }
+  items.forEach((i) => i.addEventListener('change', updateTotal));
+
+  // estado de cada etapa: [estado, aberta?]
+  const stages = {
+    review: [['done', 0], ['done', 0], ['current', 1], ['todo', 0], ['todo', 0]],
+    repair: [['done', 0], ['done', 0], ['done', 0], ['current', 1], ['todo', 0]],
+    ready:  [['done', 0], ['done', 0], ['done', 0], ['done', 0], ['done', 1]]
+  };
+
+  function setStage(name, approvedTotal, approvedAt) {
+    stages[name].forEach(([state, open], i) => {
+      steps[i].dataset.state = state;
+      if (open) steps[i].dataset.open = 'true'; else delete steps[i].dataset.open;
+    });
+    $('#budgetMeta').textContent = name === 'review'
+      ? 'Aguardando a sua aprovação'
+      : 'Aprovado às ' + approvedAt + ', ' + money.format(approvedTotal);
+    $('#repairMeta').textContent =
+      name === 'review' ? 'Começa depois da aprovação'
+      : name === 'repair' ? 'Marcos já está no elevador 3'
+      : 'Concluído';
+    $('#readyMeta').textContent = name === 'ready'
+      ? 'Retire na recepção até as 18h'
+      : 'Você recebe o aviso aqui';
+  }
+
+  function showNote(html) { note.innerHTML = html; requestAnimationFrame(() => note.classList.add('show')); }
+  function hideNote() { note.classList.remove('show'); setTimeout(() => { if (!note.classList.contains('show')) note.innerHTML = ''; }, 300); }
+
+  function reset() {
+    clearTimeout(timer);
+    items.forEach((i) => { i.checked = true; });
+    updateTotal();
+    setStage('review');
+    hideNote();
+    screen.scrollTo({ top: 0 });
+  }
+
+  approveBtn.addEventListener('click', () => {
+    const t = total();
+    if (t === 0) return;
+    const at = nowTime();
+    setStage('repair', t, at);
+    showNote(
+      '<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#FFC400"/>' +
+      '<path d="M8 17l5 5 11-12" fill="none" stroke="#0E2238" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '<span><b>Painel da oficina</b>Elevador 3 aprovado. O mecânico já pode começar, sem ligação.</span>'
+    );
+    live.textContent = 'Orçamento aprovado. Conserto em andamento.';
+    timer = setTimeout(() => {
+      setStage('ready', t, at);
+      live.textContent = 'Seu carro está pronto para retirada.';
+    }, reduceMotion ? 1500 : 3800);
+  });
+
+  $('#again').addEventListener('click', reset);
+
+  /* ----- placa ----- */
+  const form = $('#plateForm');
+  const input = $('#placa');
+  const error = $('#placaErro');
+  const clean = (v) => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
+  const fmt = (c) => (c.length > 3 ? c.slice(0, 3) + '-' + c.slice(3) : c);
+
+  input.addEventListener('input', () => {
+    input.value = fmt(clean(input.value));
+    input.removeAttribute('aria-invalid');
+    error.textContent = '';
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const c = clean(input.value);
+    if (c.length < 7) {
+      input.setAttribute('aria-invalid', 'true');
+      error.textContent = 'Digite os 7 caracteres da placa, como ABC-1D23.';
+      input.focus();
+      return;
+    }
+    $('#plateText').textContent = fmt(c);
+    reset();
+    live.textContent = 'Acompanhamento do veículo ' + fmt(c) + ' carregado.';
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      $('#bay').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+    }
+  });
+
+  $('#navCta').addEventListener('click', () => setTimeout(() => input.focus(), 0));
+
+  updateTotal();
+})();
+</script>
+</body>
+</html>
